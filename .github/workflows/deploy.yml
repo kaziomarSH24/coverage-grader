@@ -31,7 +31,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/coverage-grader:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/coverage-grader:latest
 
       # Nginx-Proxy push
       - name: Build and push Nginx-Proxy image
@@ -40,7 +40,7 @@ jobs:
           context: ./nginx
           file: ./nginx/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/coverage-grader-nginx-proxy:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/coverage-grader-nginx-proxy:latest
 
 # Job 2: Deploy to Server
 #   deploy:

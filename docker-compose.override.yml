@@ -1,0 +1,34 @@
+# version: '3.8'
+
+services:
+  coverage-app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: my-coverage-app #local image name
+
+  nginx-proxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: coverage-nginx-proxy #local image name
+
+  queue-worker:
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    image: my-coverage-app # Use the same local image name
+    depends_on:
+      - coverage-app
+
+  scheduler:
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    image: my-coverage-app # Use the same local image name 
+    depends_on:
+      - coverage-app
+
+  coverage-redis:
+    ports:
+      - "6380:6379"

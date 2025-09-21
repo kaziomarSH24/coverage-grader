@@ -4,6 +4,9 @@ namespace App\Providers;
 
 // use App\Models\Product;
 // use App\Observers\ProductObserver;
+
+use App\Models\User;
+use App\Observers\UserObserve;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Observers
         // Product::observe(ProductObserver::class);
+        User::observe(UserObserve::class);
 
     }
 }

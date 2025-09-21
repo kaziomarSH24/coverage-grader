@@ -21,36 +21,58 @@ class UserService extends BaseService
         // Ensure BaseService initializes the model instance
         parent::__construct();
 
-        $this->allowedFilters = [
-            // New: Added a global filter named 'search'
-            // This will search both 'name' and 'email' columns
-            AllowedFilter::custom('search', new GlobalSearchFilter, 'name,email'),
+    }
 
-            // Regular filters are also included
-            'name',
+    /**
+     * Which fields are allowed to be filtered by.
+     * @var array
+     */
+    protected function getAllowedFilters(): array
+    {
+        return [
+            AllowedFilter::custom('search', new GlobalSearchFilter, 'first_name,last_name,email'),
+            'first_name',
             'email',
+            'last_name',
+            AllowedFilter::exact('status'),
+            AllowedFilter::exact('roles.name'),
+        ];
+    }
+
+    /**
+     * Which fields are allowed to be sorted by.
+     * @var array
+     */
+    protected function getAllowedSorts(): array
+    {
+        return [
+            'id',
+            'first_name',
+            'created_at',
+        ];
+    }
+
+    /**
+     * Which relationships are allowed to be loaded.
+     * @var array
+     */
+    protected function getAllowedIncludes(): array
+    {
+        return [
+            'roles',
         ];
     }
 
 
 
-    /**
-    * Which fields are allowed to be sorted by.
-     * @var array
-     */
-    protected array $allowedSorts = [
-        'id',
-        'name',
-        'created_at',
-    ];
-
-    /**
-    * Which relationships are allowed to be loaded.
-     * @var array
-     */
-    protected array $allowedIncludes = [
-        'roles',
-    ];
-
-
+    //assign role to user
+    public function assignRole(int $userId, string $roleName): User
+    {
+        $user = $this->getById($userId);
+        if (!$user instanceof User) {
+            throw new \RuntimeException("User not found or invalid type returned.");
+        }
+        $user->syncRoles([$roleName]);
+        return $user;
+    }
 }

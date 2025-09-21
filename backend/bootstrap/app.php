@@ -30,7 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->api(append: [
+            \App\Http\Middleware\UpdateLastUserActivity::class,
+        ]);
     })
     ->withSchedule(function (Schedule $schedule) {
          $schedule->command('activitylog:clean --days=365')->daily();

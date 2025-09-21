@@ -41,9 +41,9 @@ abstract class BaseService
     protected Model $model;
 
     // --- Query Builder Properties ---
-    protected array $allowedFilters = [];
-    protected array $allowedIncludes = [];
-    protected array $allowedSorts = [];
+    abstract protected function getAllowedFilters(): array;
+    abstract protected function getAllowedIncludes(): array;
+    abstract protected function getAllowedSorts(): array;
 
     /**
      * BaseService constructor.
@@ -61,34 +61,34 @@ abstract class BaseService
      * @param Closure|null  $queryCallback   A closure to apply custom query
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
- public function getAll(?Closure $queryCallback = null)
+    public function getAll(?Closure $queryCallback = null)
     {
         $callback = function () use ($queryCallback) {
-            // Prothome, ekta base Eloquent query builder toiri kora hocche.
+            // First, a base Eloquent query builder is created.
             $baseQuery = $this->model->query();
 
-            // Jodi kono custom query callback pathano hoy, sheti-ke apply kora hocche.
+            // If a custom query callback is provided, apply it.
             if ($queryCallback) {
                 $queryCallback($baseQuery);
             }
 
-            // Ebar, ei (potenshial-vabe poribortito) builder-ti-ke Spatie QueryBuilder-e pathano hocche.
+            // Then, pass this (potentially modified) builder to Spatie QueryBuilder.
             return QueryBuilder::for($baseQuery)
-                ->allowedFilters($this->allowedFilters)
-                ->allowedIncludes($this->allowedIncludes)
-                ->allowedSorts($this->allowedSorts)
+                ->allowedFilters($this->getAllowedFilters())
+                ->allowedIncludes($this->getAllowedIncludes())
+                ->allowedSorts($this->getAllowedSorts())
                 ->paginate(request()->input('per_page', 15))
                 ->appends(request()->query());
         };
 
-        // func_get_args() shob argument-ke ekta array hishebe return kore
+        // func_get_args() returns all arguments as an array
         return $this->cache(__FUNCTION__, func_get_args(), $callback);
     }
 
     /**
      * Retrieve a single record by its primary key.
      *
-     * @param int   $id    The primary key value.
+     * @param int|string   $id    The primary key value.
      * @param array $with  Relationships to eager load.
      * @return \Illuminate\Database\Eloquent\Model
      *
@@ -104,12 +104,12 @@ abstract class BaseService
     /**
      * Retrieve a single record by a specific column and value, or throw an exception if not found.
      *
-     * @param String $column
+     * @param string $column
      * @param $value
      * @param array $with
      * @return \Illuminate\Database\Eloquent\Model
      */
-     public function findByOrFail(string $column, $value, array $with = [])
+    public function findByOrFail(string $column, $value, array $with = [])
     {
         return $this->cache(__FUNCTION__, func_get_args(), function () use ($column, $value, $with) {
             return $this->model->with($with)->where($column, $value)->firstOrFail();
@@ -132,7 +132,7 @@ abstract class BaseService
     /**
      * Update an existing record in the database.
      *
-     * @param int          $id                    Primary key of the record to update.
+     * @param int|string   $id                    Primary key of the record to update.
      * @param array        $data                  Data to be updated.
      * @param array        $relations             Related models to sync or attach.
      * @param Closure|null $transactionalCallback Optional transactional logic after update.
@@ -147,7 +147,7 @@ abstract class BaseService
     /**
      * Delete a record by its primary key.
      *
-     * @param int $id Primary key of the record to delete.
+     * @param int|string $id Primary key of the record to delete.
      * @return bool
      */
     public function delete(int|string $id): bool
@@ -155,3 +155,4 @@ abstract class BaseService
         return $this->getById($id)->delete();
     }
 }
+

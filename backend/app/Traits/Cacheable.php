@@ -39,9 +39,13 @@ trait Cacheable
      */
     private function generateCacheKey(string $method, array $arguments): string
     {
+        $queryParams = request()->query();
         ksort($arguments); // Ensures argument order does not affect the key.
-        $argumentString = json_encode($arguments);
+        ksort($queryParams);
 
-        return get_class($this) . '@' . $method . ':' . md5($argumentString);
+        $argumentString = json_encode($arguments);
+        $queryString = json_encode($queryParams);
+
+        return get_class($this) . '@' . $method . ':' . md5($argumentString . $queryString);
     }
 }

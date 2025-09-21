@@ -22,17 +22,10 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'otp',
-        'otp_expires_at',
-        'verification_token',
-        'email_verified_at',
-        'is_active',
-        'fcm_token',
+    protected $guarded = [
+        'id'
     ];
+    protected $appends = ['full_name'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -75,4 +68,31 @@ class User extends Authenticatable
             ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}")
             ->useLogName('user_activity');
     }
+///full  name
+    public function getFullNameAttribute(): string
+    {
+        if($this->last_name === 'null' || $this->last_name === null){
+            return $this->first_name;
+        }
+        $fullName = $this->first_name . ' ' . $this->last_name;
+
+        return $fullName;
+    }
+
+    //get avatar
+    public function getAvatarAttribute($value)
+    {
+        $fullName = $this->first_name;
+
+        if (!empty($this->last_name)) {
+            $fullName .= '+' . $this->last_name;
+        }
+
+        $encodedName = urlencode($fullName);
+
+        return $value
+            ? asset('storage/' . $value)
+            : "https://ui-avatars.com/api/?background=random&name={$encodedName}&bold=true";
+    }
+
 }

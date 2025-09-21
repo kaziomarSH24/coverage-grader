@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Notifications\Auth\SendOtpNotification;
 use App\Notifications\TestLoginPushNotification;
+use App\Traits\FileUploadTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +15,7 @@ use Illuminate\Validation\Rule;
 
 class AuthService
 {
+    use FileUploadTrait;
     /**
      * Registers a new user and sends OTP/verification link.
      */
@@ -23,12 +25,14 @@ class AuthService
         $token = Str::random(64);
 
         $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'] ?? null,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'otp' => $otp,
             'verification_token' => $token,
             'otp_expires_at' => Carbon::now()->addMinutes(10),
+            'joined_at' => Carbon::now(),
         ]);
 
         //register fcm token if provided
@@ -223,19 +227,6 @@ class AuthService
      */
     public function updateProfile(User $user, array $data): User
     {
-        // Validation rule to check for unique email
-        validator($data, [
-            'name' => 'sometimes|required|string|max:255',
-            'email' => [
-                'sometimes',
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-        ])->validate();
-
         $user->update($data);
 
         return $user;

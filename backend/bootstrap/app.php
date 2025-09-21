@@ -57,7 +57,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AuthorizationException $e, Request $request) {
             if ($request->is('api/*')) {
-                return response_error('This action is unauthorized.', [], 403);
+                return response_error('You do not have permission to perform this action.', [], 403);
             }
         });
 

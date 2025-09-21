@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PolicyManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -137,5 +138,8 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         // User Management
         Route::apiResource('users', UserManagementController::class)->except(['create', 'edit', 'store', 'update']);
         Route::post('users/{user}/assign-role', [UserManagementController::class, 'assignRole'])->name('users.assignRole');
+
+        //Policy Management
+        Route::apiResource('policies', PolicyManagementController::class)->except(['create', 'edit']);
     });
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
@@ -129,5 +130,12 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
 
     Route::fallback(function () {
         return response_error('The requested API endpoint does not exist.', [], 404);
+    });
+
+    //**-----Admin Routes------ */
+    Route::middleware('can:access-admin')->prefix('admin')->name('api.v1.admin.')->group(function () {
+        // User Management
+        Route::apiResource('users', UserManagementController::class)->except(['create', 'edit', 'store', 'update']);
+        Route::post('users/{user}/assign-role', [UserManagementController::class, 'assignRole'])->name('users.assignRole');
     });
 });

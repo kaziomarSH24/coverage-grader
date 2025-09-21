@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->string('contact_number')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('otp')->nullable();
             $table->string('verification_token')->nullable();
             $table->timestamp('otp_expires_at')->nullable();

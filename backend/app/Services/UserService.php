@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Filters\GlobalSearchFilter;
 use App\Services\BaseService;
 use App\Models\User;
+use App\Traits\ManagesData;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class UserService extends BaseService
 {
+    use ManagesData;
     /**
      * The model class name.
      *
@@ -75,4 +77,6 @@ class UserService extends BaseService
         $user->syncRoles([$roleName]);
         return $user;
     }
+
+    //sotore 
 }

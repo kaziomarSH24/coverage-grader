@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Admin;
 
 use App\Filters\GlobalSearchFilter;
 use App\Services\BaseService;
 use App\Models\PolicyCategory;
 use App\Traits\FileUploadTrait;
-use App\Traits\ManagesData;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class PolicyCategoryService extends BaseService
 {
-    use ManagesData, FileUploadTrait;
+    use FileUploadTrait;
     /**
      * The model class name.
      *
@@ -55,9 +54,23 @@ class PolicyCategoryService extends BaseService
         $data['slug'] = generateUniqueSlug(new $this->modelClass, $data['name']);
         //image upload
         if ($requset->hasFile('logo_url')) {
-            $data['logo_url'] = $this->handleFileUpload($requset, 'logo_url', 'policy_categories');
+            $data['logo_url'] = $this->handleFileUpload($requset, 'logo_url', 'policy_categories',null, null, 90, true);
         }
-        return $this->storeOrUpdate($data, new $this->modelClass);
+        return $this->create($data);
+    }
+
+    //update category
+    public function updateCategory($policy, $requset, array $data){
+        //generate slug
+        $data['slug'] = generateUniqueSlug(new $this->modelClass, $data['name'], $policy->id);
+       //image hadle
+        if ($requset->hasFile('logo_url')) {
+            //remove old image
+            $this->deleteFile($policy->logo_url);
+            //upload new image
+            $data['logo_url'] = $this->handleFileUpload($requset, 'logo_url', 'policy_categories',null, null, 90, true);
+        }
+        return $this->update($policy->id, $data);
     }
 
 }

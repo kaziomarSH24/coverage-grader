@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PolicyCategory extends Model
 {
@@ -17,6 +18,6 @@ class PolicyCategory extends Model
     //add image url accessor
     public function getLogoUrlAttribute($value)
     {
-        return $value ? asset('storage/' . $value) : null;
+        return $value ? Storage::disk('public')->url($value) : null;
     }
 }

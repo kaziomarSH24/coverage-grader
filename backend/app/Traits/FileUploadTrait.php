@@ -35,6 +35,7 @@ trait FileUploadTrait
 
         $file = $request->file($fieldName);
         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $originalFileName = Str::slug($originalFileName); // Convert spaces and special chars to slug
         $fileName = time() . '_' . $originalFileName;
 
         if (str_starts_with($file->getMimeType(), 'image/')) {

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PoliceCategoryRequest;
 use App\Http\Resources\Admin\PolicyCategoryResource;
 use App\Models\PolicyCategory;
-use App\Services\PolicyCategoryService;
+use App\Services\Admin\PolicyCategoryService;
 use Illuminate\Http\Request;
 
 class PolicyManagementController extends Controller
@@ -47,9 +47,12 @@ class PolicyManagementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PoliceCategoryRequest $request, PolicyCategory $policy)
     {
-        //
+        $validated = $request->validated();
+        // return $policy;
+        $category = $this->policyCategoryService->updateCategory($policy, $request, $validated);
+        return response_success('Policy category updated successfully.', $category);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rule;
 
 class PoliceCategoryRequest extends BaseRequest
 {
@@ -13,18 +14,19 @@ class PoliceCategoryRequest extends BaseRequest
      */
     public function rules(): array
     {
-        $rules = [
-            'name' => ['required', 'string', 'max:255', 'unique:policy_categories,name'],
+        $policyCategory = $this->route('policy');
+
+        return [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('policy_categories', 'name')
+                    ->ignore($policyCategory), 
+            ],
             'description' => ['nullable', 'string'],
             'logo_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
-            'status' => ['required', 'in:active,inactive'],
+            'status' => ['required', 'string', Rule::in(['active', 'inactive'])],
         ];
-
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $id = $this->route('id');
-            $rules['name'][3] = 'unique:policy_categories,name,' . $id;
-        }
-
-        return $rules;
     }
 }

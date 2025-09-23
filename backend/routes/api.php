@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\FaqController;
 use App\Http\Controllers\Api\V1\Admin\InsuranceProviderController;
+use App\Http\Controllers\Api\V1\Admin\NotificationAlertController;
+use App\Http\Controllers\Api\V1\Admin\PageController;
 use App\Http\Controllers\Api\V1\Admin\PolicyManagementController;
 use App\Http\Controllers\Api\V1\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +20,7 @@ use App\Http\Controllers\Api\V1\Payment\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
+use App\Models\User;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -137,11 +141,22 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         // User Management
         Route::apiResource('users', UserManagementController::class)->except(['create', 'edit', 'store', 'update']);
         Route::post('users/{user}/assign-role', [UserManagementController::class, 'assignRole'])->name('users.assignRole');
+        Route::put('users/{user}/status', [UserManagementController::class, 'updateStatus'])->name('users.updateStatus');
 
         //Policy Management
         Route::apiResource('policies', PolicyManagementController::class)->except(['create', 'edit']);
 
         //insurance provider management
         Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
+
+        //Notification Alert management
+        Route::apiResource('notifications', NotificationAlertController::class)->except(['create', 'edit', 'update', 'destroy']);
+        Route::get('notifications/stats', [NotificationAlertController::class, 'dashboardStats'])->name('notifications.stats');
+
+        //Page management
+        Route::apiResource('pages', PageController::class)->except(['create', 'edit', 'index','update']);
+        //faq
+        Route::apiResource('faqs',FaqController::class)->except(['show','edit','create']);
+
     });
 });

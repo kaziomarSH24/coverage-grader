@@ -48,6 +48,21 @@ class UserManagementController extends Controller
         );
     }
 
+    //update user status
+    public function updateStatus(Request $request, User $user)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive',
+        ]);
+        
+        $user->status = $request->status;
+        $user->save();
+        if($request->status == 'inactive'){
+            // Revoke all tokens
+            $user->tokens()->delete();
+        }
+        return response_success('User status updated successfully.', new UserResource($user));
+    }
 
     /**
      * Remove the specified resource from storage.

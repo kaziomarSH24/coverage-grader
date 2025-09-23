@@ -13,12 +13,18 @@ class PoliceCategoryRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'max:255', 'unique:policy_categories,name,' . $this->route('id')],
+        $rules = [
+            'name' => ['required', 'string', 'max:255', 'unique:policy_categories,name'],
             'description' => ['nullable', 'string'],
-            'logo_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:3072'],
+            'logo_url' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120'],
             'status' => ['required', 'in:active,inactive'],
         ];
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $id = $this->route('id');
+            $rules['name'][3] = 'unique:policy_categories,name,' . $id;
+        }
+
+        return $rules;
     }
 }
-

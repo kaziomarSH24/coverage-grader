@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('provider_state_junction', function (Blueprint $table) {
 
             $table->foreignId('provider_id')->constrained('insurance_providers')->onDelete('cascade');
-            $table->foreignId('policy_state_id')->constrained('policy_categories')->onDelete('cascade');
+            $table->foreignId('provider_state_id')->constrained('states')->onDelete('cascade');
 
             //primary key
-            $table->primary(['provider_id', 'policy_state_id']);
+            $table->primary(['provider_id', 'provider_state_id']);
         });
     }
 

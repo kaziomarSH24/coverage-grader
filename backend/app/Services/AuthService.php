@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 class AuthService
 {
@@ -225,9 +226,23 @@ class AuthService
     /**
      * Updates the user's profile.
      */
-    public function updateProfile(User $user, array $data): User
+    public function updateProfile(User $user, Request $request): User
     {
-        $user->update($data);
+
+        $validatedData = $request->validated();
+
+
+        if ($request->hasFile('avatar')) {
+
+            if ($user->avatar) {
+                $this->deleteFile($user->avatar);
+            }
+
+            $path = $this->handleFileUpload($request, 'avatar', 'avatars', null, null, 90, true);
+            $validatedData['avatar'] = $path;
+        }
+        // dd( $validatedData);
+        $user->update($validatedData);
 
         return $user;
     }

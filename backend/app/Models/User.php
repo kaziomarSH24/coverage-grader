@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -91,7 +92,7 @@ class User extends Authenticatable
         $encodedName = urlencode($fullName);
 
         return $value
-            ? asset('storage/' . $value)
+            ?  Storage::disk('public')->url($value)
             : "https://ui-avatars.com/api/?background=random&name={$encodedName}&bold=true";
     }
 

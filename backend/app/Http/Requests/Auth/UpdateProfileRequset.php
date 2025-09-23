@@ -17,6 +17,7 @@ class UpdateProfileRequset extends BaseRequest
             'first_name' => 'sometimes|string|max:255',
             'last_name' => 'sometimes|string|max:255',
             'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'address' => 'sometimes|string|max:255',
             'contact_number' => 'sometimes|string|max:20',
         ];
     }

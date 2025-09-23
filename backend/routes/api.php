@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\PolicyManagementController;
-use App\Http\Controllers\Admin\UserManagementController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\Admin\InsuranceProviderController;
+use App\Http\Controllers\Api\V1\Admin\PolicyManagementController;
+use App\Http\Controllers\Api\V1\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\V1\Payment\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
-use App\Http\Controllers\FileController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -141,5 +140,8 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
 
         //Policy Management
         Route::apiResource('policies', PolicyManagementController::class)->except(['create', 'edit']);
+
+        //insurance provider management
+        Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
     });
 });

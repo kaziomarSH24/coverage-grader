@@ -36,6 +36,7 @@ class TestLoginPushNotification extends Notification implements ShouldQueue
     public function toFirebase($notifiable)
     {
         $tokens = $notifiable->fcmTokens()->pluck('token')->toArray();
+        \Log::debug("message tokens", $tokens);
         return [
             'title' => 'Login Successful',
             'body' => 'You have successfully logged in.',

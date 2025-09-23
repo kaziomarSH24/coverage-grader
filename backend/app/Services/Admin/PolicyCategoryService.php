@@ -36,7 +36,8 @@ class PolicyCategoryService extends BaseService
      protected function getAllowedIncludes(): array
      {
         return [
-            //
+            'providers',
+            'providers.states',
         ];
      }
      protected function getAllowedSorts(): array
@@ -48,10 +49,8 @@ class PolicyCategoryService extends BaseService
         ];
      }
 
-    //store category
+    //**store category
     public function storeCategory($requset, array $data){
-        //generate slug
-        $data['slug'] = generateUniqueSlug(new $this->modelClass, $data['name']);
         //image upload
         if ($requset->hasFile('logo_url')) {
             $data['logo_url'] = $this->handleFileUpload($requset, 'logo_url', 'policy_categories',null, null, 90, true);
@@ -59,10 +58,9 @@ class PolicyCategoryService extends BaseService
         return $this->create($data);
     }
 
-    //update category
+
+    //**update category
     public function updateCategory($policy, $requset, array $data){
-        //generate slug
-        $data['slug'] = generateUniqueSlug(new $this->modelClass, $data['name'], $policy->id);
        //image hadle
         if ($requset->hasFile('logo_url')) {
             //remove old image
@@ -71,6 +69,16 @@ class PolicyCategoryService extends BaseService
             $data['logo_url'] = $this->handleFileUpload($requset, 'logo_url', 'policy_categories',null, null, 90, true);
         }
         return $this->update($policy->id, $data);
+    }
+
+    //**delete category
+    public function deleteCategory($policy){
+
+        //delete logo file
+        if($policy->logo_url){
+            $this->deleteFile($policy->logo_url);
+        }
+        return $this->delete($policy->id);
     }
 
 }

@@ -5,8 +5,10 @@ namespace App\Providers;
 // use App\Models\Product;
 // use App\Observers\ProductObserver;
 
+use App\Models\InsuranceProvider;
 use App\Models\PolicyCategory;
 use App\Models\User;
+use App\Observers\Admin\InsuranceProviderObserver;
 use App\Observers\Admin\PolicyCategoryObserver;
 use App\Observers\UserObserve;
 use Illuminate\Support\Facades\Gate;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         // Product::observe(ProductObserver::class);
         User::observe(UserObserve::class);
         PolicyCategory::observe(PolicyCategoryObserver::class);
+        InsuranceProvider::observe(InsuranceProviderObserver::class);
 
     }
 }

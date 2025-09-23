@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\InsuranceProviderController;
 use App\Http\Controllers\Api\V1\Admin\PolicyManagementController;
 use App\Http\Controllers\Api\V1\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -139,5 +140,8 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
 
         //Policy Management
         Route::apiResource('policies', PolicyManagementController::class)->except(['create', 'edit']);
+
+        //insurance provider management
+        Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
     });
 });

@@ -23,6 +23,9 @@ class PolicyManagementController extends Controller
     public function index()
     {
         $categories = $this->policyCategoryService->getAll();
+        if($categories->isEmpty()){
+            return response_error('No policy categories found', [], 404);
+        }
         return PolicyCategoryResource::collection($categories);
     }
 
@@ -60,7 +63,7 @@ class PolicyManagementController extends Controller
      */
     public function destroy(PolicyCategory $policy )
     {
-        $this->policyCategoryService->delete($policy->id);
+        $this->policyCategoryService->deleteCategory($policy);
         return response_success('Policy category deleted successfully');
     }
 }

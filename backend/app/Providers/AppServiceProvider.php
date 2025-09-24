@@ -5,11 +5,13 @@ namespace App\Providers;
 // use App\Models\Product;
 // use App\Observers\ProductObserver;
 
+use App\Models\Blog;
 use App\Models\Faq;
 use App\Models\InsuranceProvider;
 use App\Models\NotificationAlert;
 use App\Models\PolicyCategory;
 use App\Models\User;
+use App\Observers\Admin\BlogObserver;
 use App\Observers\Admin\FaqObserver;
 use App\Observers\Admin\InsuranceProviderObserver;
 use App\Observers\Admin\NotificationAlertObserver;
@@ -46,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
         InsuranceProvider::observe(InsuranceProviderObserver::class);
         NotificationAlert::observe(NotificationAlertObserver::class);
         Faq::observe(FaqObserver::class);
+        Blog::observe(BlogObserver::class);
 
     }
 }

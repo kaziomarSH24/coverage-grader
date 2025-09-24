@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\BlogController;
 use App\Http\Controllers\Api\V1\Admin\FaqController;
 use App\Http\Controllers\Api\V1\Admin\InsuranceProviderController;
 use App\Http\Controllers\Api\V1\Admin\NotificationAlertController;
@@ -152,6 +153,10 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         //Notification Alert management
         Route::apiResource('notifications', NotificationAlertController::class)->except(['create', 'edit', 'update', 'destroy']);
         Route::get('notifications/stats', [NotificationAlertController::class, 'dashboardStats'])->name('notifications.stats');
+
+        //Blog management
+        Route::apiResource('blogs', BlogController::class)->except(['create', 'edit']);
+        Route::put('blogs/{blog}/status', [BlogController::class, 'updateStatus'])->name('blogs.updateStatus');
 
         //Page management
         Route::apiResource('pages', PageController::class)->except(['create', 'edit', 'index','update']);

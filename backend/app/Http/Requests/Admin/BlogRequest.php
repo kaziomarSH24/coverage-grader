@@ -25,7 +25,7 @@ class BlogRequest extends BaseRequest
             'author_name' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'featured_image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:10240'], // max 10MB
-            'status' => ['required', 'string', Rule::in(['draft', 'published'])],
+            // 'status' => ['required', 'string', Rule::in(['draft', 'published'])],
         ];
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {

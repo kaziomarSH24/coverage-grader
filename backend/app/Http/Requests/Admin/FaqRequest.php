@@ -16,7 +16,6 @@ class FaqRequest extends BaseRequest
         return [
             'question' => 'required|string',
             'answer' => 'required|string',
-            'is_active' => 'required|boolean',
         ];
     }
 }

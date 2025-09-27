@@ -24,6 +24,13 @@ class FaqController extends Controller
        }
         return response_success('FAQs retrieved successfully.', $faqs);
     }
+
+    //show faq
+    public function show($id)
+    {
+        $faq = $this->faqService->getById($id);
+        return response_success('FAQ retrieved successfully.', $faq);
+    }
     //create faq
     public function store(FaqRequest $request)
     {

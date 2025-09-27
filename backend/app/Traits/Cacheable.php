@@ -15,7 +15,7 @@ trait Cacheable
     * @param int    $ttl        Number of seconds to cache the result (default: 1 hour).
      * @return mixed
      */
-    protected function cache(string $method, array $arguments, Closure $callback, int $ttl = 3600)
+    protected function cache(string $method, array $arguments, Closure $callback, int $ttl = 3600, bool $perUser = false)
     {
         // Uses the model's table name as the cache tag.
         // Assumes this trait is used in a class with a 'model' property.
@@ -25,7 +25,7 @@ trait Cacheable
         }
 
         $tag = $this->model->getTable();
-        $key = $this->generateCacheKey($method, $arguments);
+        $key = $this->generateCacheKey($method, $arguments, $perUser);
 
         return Cache::tags($tag)->remember($key, $ttl, $callback);
     }
@@ -37,15 +37,29 @@ trait Cacheable
      * @param array $arguments
      * @return string
      */
-    private function generateCacheKey(string $method, array $arguments): string
+    private function generateCacheKey(string $method, array $arguments, bool $perUser): string
     {
-        $queryParams = request()->query();
-        ksort($arguments); // Ensures argument order does not affect the key.
-        ksort($queryParams);
+        $keyParts = [
+            get_class($this),
+            $method,
+        ];
 
+        if ($perUser) {
+            $keyParts[] = 'user_' . (auth()->id() ?? 'guest');
+        }
+
+        $queryString = '';
+        if ($method === 'getAll') {
+            $queryParams = request()->query();
+            ksort($queryParams);
+            $queryString = json_encode($queryParams);
+        }
+
+        ksort($arguments);
         $argumentString = json_encode($arguments);
-        $queryString = json_encode($queryParams);
 
-        return get_class($this) . '@' . $method . ':' . md5($argumentString . $queryString);
+        $keyParts[] = md5($argumentString . $queryString);
+
+        return implode(':', $keyParts);
     }
 }

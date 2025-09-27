@@ -25,6 +25,13 @@ class InsuranceProviderResource extends JsonResource
             'is_sponsored' => $this->is_sponsored,
             'status' => $this->status,
             'about' => $this->about,
+            'states_count' => $this->whenLoaded('states', function () {
+                return $this->states_count;
+            }),
+            'reviews_count' => $this->review_count,
+            'avg_overall_rating' => $this->avg_overall_rating,
+            'formatted_overall_avg_score' => $this->formatted_avg_score,
+            'avg_score' => json_decode($this->avg_scores),
             'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? $this->updated_at->toDateTimeString() : null,
             'policies' => PolicyCategoryResource::collection($this->whenLoaded('policyCategories')),

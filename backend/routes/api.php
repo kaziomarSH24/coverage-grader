@@ -21,7 +21,8 @@ use App\Http\Controllers\Api\V1\Payment\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
-use App\Models\User;
+use App\Http\Controllers\Api\V1\ReviewController;
+use App\Models\Review;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -161,7 +162,19 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         //Page management
         Route::apiResource('pages', PageController::class)->except(['create', 'edit', 'index','update']);
         //faq
-        Route::apiResource('faqs',FaqController::class)->except(['show','edit','create']);
+        Route::apiResource('faqs',FaqController::class)->except(['edit','create']);
 
+    });
+
+    //** ----------------Commone Routes---------- */
+    //Review routes
+    Route::apiResource('reviews', ReviewController::class)->only(['store','index','show','destroy','update']);
+    Route::put('reviews/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+
+
+    
+    //** -------------User Routes-------------- */
+    Route::prefix('user')->name('api.v1.user.')->group(function () {
+        //Review routes
     });
 });

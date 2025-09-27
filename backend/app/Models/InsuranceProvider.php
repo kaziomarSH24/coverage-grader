@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 
 class InsuranceProvider extends Model
@@ -52,5 +53,38 @@ class InsuranceProvider extends Model
     public function getLogoUrlAttribute($value)
     {
         return $value ? Storage::disk('public')->url($value) : null;
+    }
+
+    /**
+     * Get the formatted score string with average and grade.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function formattedAvgScore(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $average = $this->avg_overall_rating;
+                $grade = '';
+                if ($average >= 4.8) {
+                    $grade = 'A+';
+                } elseif ($average >= 4.5) {
+                    $grade = 'A';
+                } elseif ($average >= 4.0) {
+                    $grade = 'A-';
+                } elseif ($average >= 3.8) {
+                    $grade = 'B+';
+                } elseif ($average >= 3.5) {
+                    $grade = 'B';
+                } elseif ($average >= 3.0) {
+                    $grade = 'B-';
+                } elseif ($average >= 2.5) {
+                    $grade = 'C';
+                } else {
+                    $grade = 'D';
+                }
+                return "{$average}/5 ({$grade})";
+            }
+        );
     }
 }

@@ -95,11 +95,11 @@ class ReviewService extends BaseService
                 ->where('provider_id', $providerId)
                 ->where('status', 'approved')
                 ->select(
-                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.claims")), 2) as claims'),
-                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.service")), 2) as service'),
-                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.pricing")), 2) as pricing'),
-                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.coverage")), 2) as coverage'),
-                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.transparency_trust")), 2) as transparency_trust')
+                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.claims")), 1) as claims'),
+                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.service")), 1) as service'),
+                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.pricing")), 1) as pricing'),
+                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.coverage")), 1) as coverage'),
+                    DB::raw('ROUND(AVG(JSON_EXTRACT(scores, "$.transparency_trust")), 1) as transparency_trust')
                 )->first();
         } else {
             $avgCategoryScores = [

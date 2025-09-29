@@ -79,7 +79,7 @@ abstract class BaseService
      * @param Closure|null  $queryCallback   A closure to apply custom query
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
- public function getAll(?Closure $queryCallback = null)
+ public function getAll(?Closure $queryCallback = null, $isCache = true)
     {
         $callback = function () use ($queryCallback) {
             // First, a base Eloquent query builder is created.
@@ -97,6 +97,9 @@ abstract class BaseService
                 ->paginate(request()->input('per_page', 15))
                 ->appends(request()->query());
         };
+        if(!$isCache){
+            return $callback();
+        }
         // func_get_args() returns all arguments as an array
         return $this->cache(__FUNCTION__, func_get_args(), $callback, $this->cacheTTL, $this->cachePerUser);
     }
@@ -116,7 +119,7 @@ abstract class BaseService
         return $this->cache(__FUNCTION__, func_get_args(), $callback, $this->cacheTTL, $this->cachePerUser);
     }
 
-   
+
 
     /**
      * Retrieve a single record by a specific column and value, or throw an exception if not found.
@@ -176,6 +179,6 @@ abstract class BaseService
      public function findRecordById(int|string $id, array $with = [])
     {
          return $this->model->with($with)->findOrFail($id);
-        
+
     }
 }

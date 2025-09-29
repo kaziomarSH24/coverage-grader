@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('author_name');
             $table->longText('content');
             $table->string('featured_image')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->enum('status', ['draft', 'published'])->default('published');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

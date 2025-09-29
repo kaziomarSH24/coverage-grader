@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
 use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\User\BlogController as UserBlogController;
+use App\Http\Controllers\Api\V1\User\PolicyManagementController as UserPolicyManagementController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -171,9 +173,12 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
     Route::put('reviews/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
 
 
-    
+
     //** -------------User Routes-------------- */
     Route::prefix('user')->name('api.v1.user.')->group(function () {
-        //Review routes
+        //Policy Management
+        Route::apiResource('policies',UserPolicyManagementController::class)->only(['index', 'show']);
+        //Blog management
+        Route::apiResource('blogs',UserBlogController::class)->only(['index', 'show']);
     });
 });

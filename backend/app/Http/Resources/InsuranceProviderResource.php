@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources;
 
+use App\Http\Resources\Admin\PolicyCategoryResource;
+use App\Http\Resources\Admin\StatesResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,7 +32,8 @@ class InsuranceProviderResource extends JsonResource
             }),
             'reviews_count' => $this->review_count,
             'avg_overall_rating' => $this->avg_overall_rating,
-            'formatted_overall_avg_score' => $this->formatted_avg_score,
+            'avg_grade' => $this->avg_grade,
+            'formatted_overall_avg_score' =>"{$this->avg_overall_rating}/5 ({$this->avg_grade})",
             'avg_score' => json_decode($this->avg_scores),
             'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
             'updated_at' => $this->updated_at ? $this->updated_at->toDateTimeString() : null,

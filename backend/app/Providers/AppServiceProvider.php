@@ -14,11 +14,12 @@ use App\Models\Review;
 use App\Models\User;
 use App\Observers\Admin\BlogObserver;
 use App\Observers\Admin\FaqObserver;
-use App\Observers\Admin\InsuranceProviderObserver;
+use App\Observers\InsuranceProviderObserver;
 use App\Observers\Admin\NotificationAlertObserver;
 use App\Observers\Admin\PolicyCategoryObserver;
 use App\Observers\User\ReviewObserver;
 use App\Observers\UserObserve;
+use App\Policies\InsuranceProviderPolicy;
 use App\Policies\ReviewPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         // ...existing code...
         Review::class => ReviewPolicy::class,
+        InsuranceProvider::class => InsuranceProviderPolicy::class,
     ];
 
 

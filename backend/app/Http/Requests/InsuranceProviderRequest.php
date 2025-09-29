@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
 
@@ -15,6 +15,7 @@ class InsuranceProviderRequest extends BaseRequest
     {
         $rules = [
             'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240', //10 mb
             'about' => 'nullable|string',
             'pros'  => 'nullable|array',
@@ -35,6 +36,7 @@ class InsuranceProviderRequest extends BaseRequest
             $id = $this->route('id');
             $rules = [
                 'name' => 'sometimes|string|max:255',
+                'title' => 'sometimes|nullable|string|max:255',
                 'logo_url' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
                 'about' => 'sometimes|nullable|string',
                 'pros'  => 'sometimes|nullable|array',

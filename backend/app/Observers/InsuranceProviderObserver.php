@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Observers\Admin;
+namespace App\Observers;
 
 use App\Observers\BaseObserver;
 

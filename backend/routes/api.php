@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\BlogController;
 use App\Http\Controllers\Api\V1\Admin\FaqController;
-use App\Http\Controllers\Api\V1\Admin\InsuranceProviderController;
+use App\Http\Controllers\Api\V1\InsuranceProviderController;
 use App\Http\Controllers\Api\V1\Admin\NotificationAlertController;
 use App\Http\Controllers\Api\V1\Admin\PageController;
 use App\Http\Controllers\Api\V1\Admin\PolicyManagementController;
@@ -22,7 +22,6 @@ use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
 use App\Http\Controllers\Api\V1\ReviewController;
-use App\Models\Review;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -148,9 +147,6 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         //Policy Management
         Route::apiResource('policies', PolicyManagementController::class)->except(['create', 'edit']);
 
-        //insurance provider management
-        Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
-
         //Notification Alert management
         Route::apiResource('notifications', NotificationAlertController::class)->except(['create', 'edit', 'update', 'destroy']);
         Route::get('notifications/stats', [NotificationAlertController::class, 'dashboardStats'])->name('notifications.stats');
@@ -167,6 +163,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
     });
 
     //** ----------------Commone Routes---------- */
+    //insurance provider management
+    Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
+    Route::get('provider/compare', [InsuranceProviderController::class, 'compare'])->name('providers.compare');
     //Review routes
     Route::apiResource('reviews', ReviewController::class)->only(['store','index','show','destroy','update']);
     Route::put('reviews/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');

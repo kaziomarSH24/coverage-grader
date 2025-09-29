@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services;
 
 use App\Services\BaseService;
 use App\Models\InsuranceProvider;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Filters\GlobalSearchFilter;
 use App\Traits\FileUploadTrait;
+use Illuminate\Database\Eloquent\Collection;
 
 class InsuranceProviderService extends BaseService
 {
@@ -29,7 +30,10 @@ class InsuranceProviderService extends BaseService
     {
         return [
             'name',
+            'avg_overall_rating',
+            'price',
             AllowedFilter::exact('status'),
+            AllowedFilter::exact('policyCategories.slug'),
         ];
     }
 
@@ -48,7 +52,9 @@ class InsuranceProviderService extends BaseService
         return [
             'id',
             'name',
+            'price',
             'created_at',
+            'avg_overall_rating'
         ];
      }
 
@@ -101,5 +107,18 @@ class InsuranceProviderService extends BaseService
             $this->deleteFile($provider->logo_url);
         }
         return $this->delete($provider->id);
+    }
+
+    //**Compaire providers */
+    public function getForComparison(array $providerIds): Collection
+    {
+       
+        return $this->cache(__FUNCTION__, func_get_args(), function () use ($providerIds) {
+            return $this->model
+                ->whereIn('id', $providerIds)
+                ->withCount('reviews')
+                ->with(['states', 'policyCategories']) 
+                ->get();
+        });
     }
 }

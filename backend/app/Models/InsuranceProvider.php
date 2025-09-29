@@ -48,6 +48,12 @@ class InsuranceProvider extends Model
         return $this->belongsToMany(State::class, 'provider_state_junction', 'provider_id', 'provider_state_id');
     }
 
+    //relationship with reviews
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'provider_id');
+    }
+
 
     //add image url accessor
     public function getLogoUrlAttribute($value)
@@ -60,7 +66,7 @@ class InsuranceProvider extends Model
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    protected function formattedAvgScore(): Attribute
+    protected function avgGrade(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -83,7 +89,7 @@ class InsuranceProvider extends Model
                 } else {
                     $grade = 'D';
                 }
-                return "{$average}/5 ({$grade})";
+                return $grade;
             }
         );
     }

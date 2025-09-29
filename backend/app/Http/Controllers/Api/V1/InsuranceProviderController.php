@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Admin;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\InsuranceProviderRequest;
-use App\Http\Resources\Admin\InsuranceProviderResource;
+use App\Http\Requests\CompareProvidersRequest;
+use App\Http\Requests\InsuranceProviderRequest;
+use App\Http\Resources\InsuranceProviderResource;
 use App\Models\InsuranceProvider;
-use App\Services\Admin\InsuranceProviderService;
+use App\Services\InsuranceProviderService;
 use Illuminate\Http\Request;
 
 class InsuranceProviderController extends Controller
@@ -16,6 +17,7 @@ class InsuranceProviderController extends Controller
     public function __construct(InsuranceProviderService $insuranceService)
     {
         $this->insuranceService = $insuranceService;
+        $this->authorizeResource(InsuranceProvider::class, 'provider');
     }
     /**
      * Display a listing of the resource.
@@ -42,7 +44,8 @@ class InsuranceProviderController extends Controller
      */
     public function show(InsuranceProvider $provider)
     {
-        return new InsuranceProviderResource($provider->load(['policyCategories', 'states']));
+        $provider->load(['policyCategories', 'states'])->loadCount(['states']);
+        return new InsuranceProviderResource($provider);
     }
 
 
@@ -64,6 +67,15 @@ class InsuranceProviderController extends Controller
     {
         $this->insuranceService->deleteProvider($provider); 
         return response_success('Insurance provider deleted successfully');
+    }
+
+    //* Compare providers
+    public function compare(CompareProvidersRequest $request)
+    {
+        $request->validated();
+        $providerIds = $request->input('provider_ids');
+        $providers = $this->insuranceService->getForComparison($providerIds);
+        return InsuranceProviderResource::collection($providers);
     }
 
 }

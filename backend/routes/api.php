@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Chat\ConversationController;
 use App\Http\Controllers\Api\V1\Chat\GroupController;
 use App\Http\Controllers\Api\V1\Chat\MessageController;
+use App\Http\Controllers\Api\V1\ContactUsController;
 use App\Http\Controllers\Api\V1\Payment\InvoiceController;
 use App\Http\Controllers\Api\V1\Payment\OneTimePaymentController;
 use App\Http\Controllers\Api\V1\Payment\PaymentMethodController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\User\BlogController as UserBlogController;
 use App\Http\Controllers\Api\V1\User\PolicyManagementController as UserPolicyManagementController;
+use App\Http\Controllers\APi\V1\User\UserController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
 
@@ -171,6 +173,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
     //Review routes
     Route::apiResource('reviews', ReviewController::class)->only(['store','index','show','destroy','update']);
     Route::put('reviews/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+    //Contact us routes
+    Route::apiResource('contacts', ContactUsController::class)->only(['store','index','show','destroy']);
+    Route::put('contacts/{contact}/mark-as-read', [ContactUsController::class, 'markAsRead']);
 
 
 
@@ -180,5 +185,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         Route::apiResource('policies',UserPolicyManagementController::class)->only(['index', 'show']);
         //Blog management
         Route::apiResource('blogs',UserBlogController::class)->only(['index', 'show']);
+        //get pages by type
+        Route::get('pages/{type}', [UserController::class, 'getAllPages'])->name('pages.getByType');
+        //get faqs
+        Route::get('faqs', [UserController::class, 'getFaqs'])->name('faqs.getAll');
     });
 });

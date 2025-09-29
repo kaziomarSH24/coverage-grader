@@ -6,6 +6,7 @@ namespace App\Providers;
 // use App\Observers\ProductObserver;
 
 use App\Models\Blog;
+use App\Models\Contact;
 use App\Models\Faq;
 use App\Models\InsuranceProvider;
 use App\Models\NotificationAlert;
@@ -19,6 +20,7 @@ use App\Observers\Admin\NotificationAlertObserver;
 use App\Observers\Admin\PolicyCategoryObserver;
 use App\Observers\User\ReviewObserver;
 use App\Observers\UserObserve;
+use App\Policies\ContactPolicy;
 use App\Policies\InsuranceProviderPolicy;
 use App\Policies\ReviewPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         // ...existing code...
         Review::class => ReviewPolicy::class,
         InsuranceProvider::class => InsuranceProviderPolicy::class,
+        Contact::class => ContactPolicy::class,
     ];
 
 

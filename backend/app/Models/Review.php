@@ -31,6 +31,11 @@ class Review extends Model
         return $this->belongsTo(State::class, 'state_id');
     }
 
+     public function votes()
+    {
+        return $this->hasMany(ReviewVote::class);
+    }
+
 
     protected function averageScore(): Attribute
     {

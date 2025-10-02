@@ -4,6 +4,7 @@ namespace App\Http\Controllers\APi\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\State;
 use App\Services\Admin\FaqService;
 use Illuminate\Http\Request;
 
@@ -34,5 +35,15 @@ class UserController extends Controller
             return response_error('No faqs found',[], 404);
         }
         return response_success('Faqs retrieved successfully', $faqs);
+    }
+
+    //get all states
+    public function getAllStates()
+    {
+        $states = State::all(['id', 'name', 'code']);
+        if($states->isEmpty()){
+            return response_error('No states found',[], 404);
+        }
+        return response_success('States retrieved successfully', $states);
     }
 }

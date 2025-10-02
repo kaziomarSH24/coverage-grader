@@ -189,5 +189,8 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         Route::get('pages/{type}', [UserController::class, 'getAllPages'])->name('pages.getByType');
         //get faqs
         Route::get('faqs', [UserController::class, 'getFaqs'])->name('faqs.getAll');
+
+        //get all states
+        Route::get('states', [UserController::class, 'getAllStates'])->name('states.getAll');
     });
 });

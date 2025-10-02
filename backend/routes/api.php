@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\V1\Payment\RefundController;
 use App\Http\Controllers\Api\V1\Payment\StripePortalController;
 use App\Http\Controllers\Api\V1\Payment\SubscriptionController;
 use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\ReviewVoteController;
 use App\Http\Controllers\Api\V1\User\BlogController as UserBlogController;
 use App\Http\Controllers\Api\V1\User\PolicyManagementController as UserPolicyManagementController;
 use App\Http\Controllers\APi\V1\User\UserController;
@@ -137,9 +138,6 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         Route::post('/billing-portal', [StripePortalController::class, 'redirectToPortal'])->name('billing-portal');
     });
 
-    Route::fallback(function () {
-        return response_error('The requested API endpoint does not exist.', [], 404);
-    });
 
     //**-----Admin Routes------ */
     Route::middleware('can:access-admin')->prefix('admin')->name('api.v1.admin.')->group(function () {
@@ -160,21 +158,24 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         Route::put('blogs/{blog}/status', [BlogController::class, 'updateStatus'])->name('blogs.updateStatus');
 
         //Page management
-        Route::apiResource('pages', PageController::class)->except(['create', 'edit', 'index','update']);
+        Route::apiResource('pages', PageController::class)->except(['create', 'edit', 'index', 'update']);
         //faq
-        Route::apiResource('faqs',FaqController::class)->except(['edit','create']);
-
+        Route::apiResource('faqs', FaqController::class)->except(['edit', 'create']);
     });
 
     //** ----------------Commone Routes---------- */
     //insurance provider management
-    Route::apiResource('providers',InsuranceProviderController::class)->except(['create', 'edit']);
+    Route::apiResource('providers', InsuranceProviderController::class)->except(['create', 'edit']);
     Route::get('provider/compare', [InsuranceProviderController::class, 'compare'])->name('providers.compare');
     //Review routes
-    Route::apiResource('reviews', ReviewController::class)->only(['store','index','show','destroy','update']);
+    Route::apiResource('reviews', ReviewController::class)->only(['store', 'index', 'show', 'destroy', 'update']);
     Route::put('reviews/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+
+    //Review vote routes
+    Route::get('providers/{provider}/reviews', [ReviewVoteController::class, 'index'])->name('reviews.index');
+    Route::post('reviews/{review}/vote', [ReviewVoteController::class, 'vote'])->name('reviews.vote');
     //Contact us routes
-    Route::apiResource('contacts', ContactUsController::class)->only(['store','index','show','destroy']);
+    Route::apiResource('contacts', ContactUsController::class)->only(['store', 'index', 'show', 'destroy']);
     Route::put('contacts/{contact}/mark-as-read', [ContactUsController::class, 'markAsRead']);
 
 
@@ -182,9 +183,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
     //** -------------User Routes-------------- */
     Route::prefix('user')->name('api.v1.user.')->group(function () {
         //Policy Management
-        Route::apiResource('policies',UserPolicyManagementController::class)->only(['index', 'show']);
+        Route::apiResource('policies', UserPolicyManagementController::class)->only(['index', 'show']);
         //Blog management
-        Route::apiResource('blogs',UserBlogController::class)->only(['index', 'show']);
+        Route::apiResource('blogs', UserBlogController::class)->only(['index', 'show']);
         //get pages by type
         Route::get('pages/{type}', [UserController::class, 'getAllPages'])->name('pages.getByType');
         //get faqs
@@ -193,4 +194,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->prefix('v1')->group(function 
         //get all states
         Route::get('states', [UserController::class, 'getAllStates'])->name('states.getAll');
     });
+});
+
+
+Route::fallback(function () {
+    return response_error('The requested API endpoint does not exist.', [], 404);
 });
